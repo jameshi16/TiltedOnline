@@ -32,7 +32,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential gcc g++ bash curl unzip m4 pkg-config cmake autoconf automake sudo
           git submodule sync --recursive
           git submodule update --init --force --recursive --depth=1
-          chown -R \$UID:\$UID .
+          chown -R $UID:$UID .
           bash <(curl -fsSL https://xmake.io/shget.text)
           source ~/.xmake/profile
           sed -i s/x64/aarch64/g xmake.lua
