@@ -1,0 +1,40 @@
+name: Build linux (aarch64)
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - arch: aarch64
+            distro: ubuntu20.04
+        mode: [debug, release]
+
+    runs-on: ubuntu-20.04
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: uraimo/run-on-arch-action@v2.0.5
+      name: Virtualize & Build
+      with:
+        githubToken: ${{ github.token }}
+      run: |
+        git submodule sync --recursive
+        git submodule update --init --force --recursive --depth=1
+        sudo apt-get update
+        bash <(curl -fsSL https://xmake.io/shget.text)
+        source ~/.xmake/profile
+        xmake repo --update
+        xmake config --arch=${{ matrix.arch  }} --mode=${{ matrix.mode }} --yes
+        xmake
+        xmake install -o packaged
+
+    # Upload artifacts
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}
+        path: packaged/bin/**
