@@ -24,12 +24,13 @@ jobs:
         githubToken: ${{ github.token }}
         run: |
           apt-get update && apt-get upgrade -y
-          apt-get install -y git build-essential gcc g++ bash curl unzip
+          DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential gcc g++ bash curl unzip m4 pkg-config cmake autoconf automake
           git submodule sync --recursive
           git submodule update --init --force --recursive --depth=1
           bash <(curl -fsSL https://xmake.io/shget.text)
           source ~/.xmake/profile
-          xmake config --arch=${{ matrix.arch  }} --mode=${{ matrix.mode }} --yes
+          sed -i s/x64/aarch64/g xmake.lua
+          xmake config --root --arch=arm64-v8a --mode=${{ matrix.mode }} --yes
           xmake
           xmake install -o packaged
 
