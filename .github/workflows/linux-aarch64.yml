@@ -8,9 +8,9 @@ jobs:
   build:
     strategy:
       matrix:
-        os: ubuntu20.04
-        arch: aarch64
-        arch_alias: arm64-v8a
+        os: [ubuntu20.04]
+        arch: [aarch64]
+        arch_alias: [arm64-v8a]
         mode: [debug, release]
       fail-fast: true
 
