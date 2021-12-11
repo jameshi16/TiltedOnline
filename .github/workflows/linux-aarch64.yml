@@ -29,16 +29,16 @@ jobs:
           --privileged
         run: |
           apt-get update && apt-get upgrade -y
-          DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential gcc g++ bash curl unzip m4 pkg-config cmake autoconf automake sudo
+          DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential gcc g++ bash curl unzip m4 pkg-config cmake autoconf automake
           git submodule sync --recursive
           git submodule update --init --force --recursive --depth=1
           chown -R $UID:$UID .
           bash <(curl -fsSL https://xmake.io/shget.text)
           source ~/.xmake/profile
           sed -i s/x64/aarch64/g xmake.lua
-          sudo xmake config --root --arch=arm64-v8a --mode=${{ matrix.mode }} --yes
-          sudo xmake --root
-          sudo xmake install --root -o packaged
+          xmake config --root --arch=arm64-v8a --mode=${{ matrix.mode }} --yes
+          xmake --root
+          xmake install --root -o packaged
 
     # Upload artifacts
     - uses: actions/upload-artifact@v2
