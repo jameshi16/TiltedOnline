@@ -23,6 +23,7 @@ jobs:
       with:
         githubToken: ${{ github.token }}
         run: |
+          sudo apt-get install git build-essential gcc g++ bash curl unzip
           git submodule sync --recursive
           git submodule update --init --force --recursive --depth=1
           sudo apt-get update
