@@ -8,11 +8,11 @@ jobs:
   build:
     strategy:
       matrix:
-        include:
-          - arch: aarch64
-            distro: ubuntu20.04
+        os: ubuntu20.04
+        arch: aarch64
+        arch_alias: arm64-v8a
         mode: [debug, release]
-      fail-fast: false
+      fail-fast: true
 
     runs-on: ubuntu-20.04
     if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -23,20 +23,26 @@ jobs:
       name: Virtualize & Build
       with:
         arch: ${{ matrix.arch }}
-        distro: ${{ matrix.distro }}
-        githubToken: ${{ github.token }}
-        dockerRunArgs: |
-          --privileged
+        distro: ${{ matrix.os }}
         run: |
+          echo "Installing dependencies"
           apt-get update && apt-get upgrade -y
           DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential gcc g++ bash curl unzip m4 pkg-config cmake autoconf automake
+
+          echo "Updating submodules"
           git submodule sync --recursive
           git submodule update --init --force --recursive --depth=1
+
+          echo "Fixing permissions"
           chown -R $UID:$UID .
+
+          echo "Installing xmake"
           bash <(curl -fsSL https://xmake.io/shget.text)
           source ~/.xmake/profile
-          sed -i s/x64/aarch64/g xmake.lua
-          xmake config --root --arch=arm64-v8a --mode=${{ matrix.mode }} --yes
+
+          echo "Tuning config for ${{ matrix.arch }}"
+          sed -i s/x64/${{ matrix.arch }}/g xmake.lua
+          xmake config --root --arch=${{ matrix.arch_alias }} --mode=${{ matrix.mode }} --yes
           xmake --root
           xmake install --root -o packaged
 
