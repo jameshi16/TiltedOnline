@@ -25,6 +25,8 @@ jobs:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
         githubToken: ${{ github.token }}
+        dockerRunArgs: |
+          --privileged
         run: |
           apt-get update && apt-get upgrade -y
           DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential gcc g++ bash curl unzip m4 pkg-config cmake autoconf automake
