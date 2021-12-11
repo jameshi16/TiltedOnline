@@ -22,16 +22,16 @@ jobs:
       name: Virtualize & Build
       with:
         githubToken: ${{ github.token }}
-      run: |
-        git submodule sync --recursive
-        git submodule update --init --force --recursive --depth=1
-        sudo apt-get update
-        bash <(curl -fsSL https://xmake.io/shget.text)
-        source ~/.xmake/profile
-        xmake repo --update
-        xmake config --arch=${{ matrix.arch  }} --mode=${{ matrix.mode }} --yes
-        xmake
-        xmake install -o packaged
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --force --recursive --depth=1
+          sudo apt-get update
+          bash <(curl -fsSL https://xmake.io/shget.text)
+          source ~/.xmake/profile
+          xmake repo --update
+          xmake config --arch=${{ matrix.arch  }} --mode=${{ matrix.mode }} --yes
+          xmake
+          xmake install -o packaged
 
     # Upload artifacts
     - uses: actions/upload-artifact@v2
