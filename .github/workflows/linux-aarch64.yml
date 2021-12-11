@@ -25,7 +25,7 @@ jobs:
         githubToken: ${{ github.token }}
         run: |
           apt-get update && apt-get upgrade -y
-          DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential gcc g++ bash curl unzip m4 pkg-config cmake autoconf automake
+          DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential gcc-10 g++-10 bash curl unzip m4 pkg-config cmake autoconf automake
           git submodule sync --recursive
           git submodule update --init --force --recursive --depth=1
           bash <(curl -fsSL https://xmake.io/shget.text)
