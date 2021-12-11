@@ -29,7 +29,6 @@ jobs:
           git submodule update --init --force --recursive --depth=1
           bash <(curl -fsSL https://xmake.io/shget.text)
           source ~/.xmake/profile
-          xmake repo --update
           xmake config --arch=${{ matrix.arch  }} --mode=${{ matrix.mode }} --yes
           xmake
           xmake install -o packaged
